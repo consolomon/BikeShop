@@ -1,0 +1,24 @@
+type: code
+files:
+  - name: main.py
+    visible: true
+    highlight_level: NONE
+    text: |-
+      class Coach(models.Model):
+          name = models.CharField(max_length=50)
+          ...
+          class Meta:
+              app_label = 'tournament'
+              def __str__(self):
+                  return self.app_label
+      
+          def __str__(self):
+              return self.name
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/29089#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: "Fri, 19 Jan 2024 03:11:40 UTC"
+record: -1
+submission_language: python3

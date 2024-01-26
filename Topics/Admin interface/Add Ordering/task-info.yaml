@@ -1,0 +1,20 @@
+type: code
+files:
+  - name: main.py
+    visible: true
+    highlight_level: NONE
+    text: |-
+      from django.contrib import admin
+      
+      
+      class FilmAdmin(admin.ModelAdmin):
+          list_display = ...
+          ordering = ...
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/28889#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: "Wed, 24 Jan 2024 10:05:17 UTC"
+record: -1
+submission_language: python3

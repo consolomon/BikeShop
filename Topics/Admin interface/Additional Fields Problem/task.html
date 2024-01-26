@@ -1,0 +1,9 @@
+<h2>Additional Fields Problem</h2>
+<div class="step-text">
+<p></p><p>Assume that you have the <code class="language-python">LikeAdmin</code> admin class:</p><pre><code class="language-python">class LikeAdmin(admin.ModelAdmin):
+    fields = ('user', 'vote', 'content', 'is_up')
+    readonly_fields = ('user', 'vote')
+
+    def is_up(self, obj):
+        return obj.vote == 1</code></pre><p>What mistake is present in this implementation?</p>
+</div>

@@ -1,0 +1,19 @@
+content:
+  - Inheritance in Python
+  - How to read a traceback
+  - Launching web server
+  - Django settings file
+  - Django ORM
+  - Queries and filters
+  - Object modification with ORM
+  - Kwargs
+  - Meta class
+  - Using models with templates
+  - Intro to views in Django
+  - Rendering templates
+  - Processing requests
+  - Forms
+  - Submitting data
+  - Registration and authentication
+  - Admin interface
+  - Template tags

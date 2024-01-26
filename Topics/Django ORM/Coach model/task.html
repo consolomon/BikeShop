@@ -1,0 +1,19 @@
+<h2>Coach model</h2>
+<div class="step-text">
+<p></p>
+<p>Assuming that you already have the <code class="language-python">Team</code> model:</p>
+<pre><code class="language-python">class Team(models.Model):
+    name = models.CharField(max_length=64)</code></pre>
+<p>Create the <code class="language-python">Coach</code> model with fields:</p>
+<ul>
+<li>
+<p><code class="language-python">name</code>, <code class="language-python">CharField</code> with <code class="language-python">max_length=50</code></p>
+</li>
+<li>
+<p><code class="language-python">experience</code>, <code class="language-python">IntegerField</code></p>
+</li>
+<li>
+<p><code class="language-python">team</code>, <code class="language-python">ForeignKey</code> to <code class="language-python">Team</code></p>
+</li>
+</ul><br><br><font color="gray">Memory limit: 256 MB</font><br><font color="gray">Time limit: 15 seconds</font><br><br>
+</div>

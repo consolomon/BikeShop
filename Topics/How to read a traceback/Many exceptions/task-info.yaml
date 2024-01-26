@@ -1,0 +1,21 @@
+type: code
+files:
+  - name: main.py
+    visible: true
+    highlight_level: NONE
+    text: |-
+      import math
+      
+      def find_sqrt(number):
+          try:
+              print(math.sqrt(number))
+          except TypeError:
+              print(math.sqrt(int(number)))
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/11716#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: "Fri, 19 Jan 2024 02:08:14 UTC"
+record: -1
+submission_language: python3

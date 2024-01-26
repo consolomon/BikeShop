@@ -1,0 +1,26 @@
+type: matching
+captions:
+  - "<code>TypeError: bad operand type for unary +: 'str'</code>"
+  - "<code>File \"C:/Users/laysa/PycharmProjects/untitled/file.py\", line 6, in good_morning<br>\
+  \  print(\"Good morning, \", + name)</code>"
+  - "<code>File \"C:/Users/laysa/PycharmProjects/untitled/file.py\", line 8, in &lt;module&gt;<br>\
+  \  good_morning(\"Jo\")</code>"
+options:
+  - This block contains the name of the error and its description.
+  - "This block contains the line that raised the exception, as well as the name and\
+  \ location of the function in which this line is located."
+  - "This block contains the function call in the executable file, as well as its location."
+files:
+  - name: main.py
+    visible: true
+    text: |+
+      #  You can experiment here, it won’t be checked
+    
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/11715#comment
+status: Solved
+record: -1
+ordering:
+  - 0
+  - 1
+  - 2

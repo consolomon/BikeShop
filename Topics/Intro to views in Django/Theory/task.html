@@ -1,0 +1,157 @@
+<h2>Intro to views in Django</h2>
+<div class="step-text">
+<p>We learned that Django follows the Model-View-Template pattern, similar to MVC. Now, it's time to get in touch with the central part of the MVT paradigm — the <strong>view</strong>, the idea that the Django framework stands on. Let's write some views!</p><h5 id="what-is-a-view">What is a view?</h5><p>The main logic of the interaction of applications with a user is described in views. Function-based views or Class-based views are responsible for how requests are processed and what answers (HTML pages and dynamic data on them) users get from our service. In general, a view is a function that receives a request from a user and returns information in a particular form.</p><p>We'll create simple view functions to memorize them while making a simple blog application. Let's say we have an ambitious idea of forming a community for Django learners, mentors, and enthusiasts. To start, we'll need a simple site to share our experiences and problems in learning. Let's start working on it!</p><p>By default, view functions are located in the <em>views.py </em>file:</p><p><img alt="" height="659" src="https://ucarecdn.com/437a0cc3-2937-499b-aa27-4aea9f6fcb0a/-/crop/756x659/0,0/-/preview/" width="756"/></p><p>As you can see, the project and application for the Django blog are already created in this picture. Let's make the preparations needed for learning views.</p><h5 id="preparations-for-simple-views">Preparations for simple views</h5><p>Do you remember what commands we need to apply to achieve the same progress? If you don't, here's a little hint for you. Indeed later, you'll be able to create projects with your eyes shut, but for now, don't hesitate to use hints.</p><pre><code class="language-no-highlight">django-admin startproject blog
+cd blog
+python3 manage.py startapp blogsite</code></pre><p>First, let's get acquainted with the render function that helps represent a simple HTML template of our blog. Frankly speaking, we don't need a template in the simplest case. For example, we can write these views in <em>views.py</em> file:</p><pre><code class="language-python">from django.http import HttpResponse
+  
+def index(request):
+    return HttpResponse("Welcome to blog of Django learners!")
+
+def list_articles(request):
+    return HttpResponse("List of articles")
+
+def contributors(request):
+    return HttpResponse("Contributors of our community")</code></pre><p>To make this <code class="language-python">HttpResponse</code> work, add URL patterns to <em>urls.py</em> in the <code class="language-python">blog</code> directory. The <code class="language-python">urlpatterns</code> variable determines a set of request comparisons and the view functions to proceed with them.</p><p>As we have the <em>urls.py</em> file in the folder of the project, we'll connect it with the application's <em>views.py</em> file as follows with the <code class="language-python">include</code> function:</p><pre><code class="language-python">from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('blogsite/', include('blogsite.urls')),
+]</code></pre><p>The next step is to create a <em>urls.py</em> file inside the application <code class="language-python">blogsite</code> manually, and that's where our URL addresses are to be placed:</p><pre><code class="language-python">from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('list_of_articles/', views.list_articles, name='list'),
+    path('contributors/', views.contributors),
+    ]</code></pre><p>That's all! Now, let's run the following command:</p><pre><code class="language-no-highlight">python3 manage.py runserver</code></pre><p>Here we see the first result of our view-making:</p><p><picture><source media="(max-width: 480px)" srcset="https://ucarecdn.com/41363dfd-af6b-464c-b371-3fd78f3d68cf/-/stretch/off/-/resize/480x/-/format/webp/ 1x,https://ucarecdn.com/41363dfd-af6b-464c-b371-3fd78f3d68cf/-/stretch/off/-/resize/960x/-/format/webp/ 2x,https://ucarecdn.com/41363dfd-af6b-464c-b371-3fd78f3d68cf/-/stretch/off/-/resize/1440x/-/format/webp/ 3x" type="image/webp"/><source media="(max-width: 800px)" srcset="https://ucarecdn.com/41363dfd-af6b-464c-b371-3fd78f3d68cf/-/stretch/off/-/resize/800x/-/format/webp/ 1x,https://ucarecdn.com/41363dfd-af6b-464c-b371-3fd78f3d68cf/-/stretch/off/-/resize/1600x/-/format/webp/ 2x,https://ucarecdn.com/41363dfd-af6b-464c-b371-3fd78f3d68cf/-/stretch/off/-/resize/2400x/-/format/webp/ 3x" type="image/webp"/><source srcset="https://ucarecdn.com/41363dfd-af6b-464c-b371-3fd78f3d68cf/-/stretch/off/-/resize/1100x/-/format/webp/ 1x,https://ucarecdn.com/41363dfd-af6b-464c-b371-3fd78f3d68cf/-/stretch/off/-/resize/2200x/-/format/webp/ 2x,https://ucarecdn.com/41363dfd-af6b-464c-b371-3fd78f3d68cf/-/stretch/off/-/resize/3000x/-/format/webp/ 3x" type="image/webp"/><img alt="" height="207" src="https://ucarecdn.com/41363dfd-af6b-464c-b371-3fd78f3d68cf/" width="567"/></picture></p><p>Nice! A bit too old-fashioned and straightforward for our goals. Of course, we can place some HTML or even big pieces of code into such view functions, but that's not useful and hard to support in case of vast projects. So let's go further and make something more exciting and informative.</p><p>By the way, we haven't yet tried to add <code class="language-python">kwargs</code> to our view function, which is also an available option. For example, we could pass some changing data to the page of our blog:</p><pre><code class="language-python"># in the views.py file:
+def contributors(request, age, name, experience):
+    return HttpResponse(f"""
+            &lt;h2&gt;Contributor of our community:&lt;/h2&gt;
+            &lt;p&gt;Name: {name}&lt;/p&gt;
+            &lt;p&gt;Age: {age}&lt;/p&gt;
+            &lt;p&gt;Experience and some info you'd like to share: {experience}&lt;/p&gt;
+    """)</code></pre><pre><code class="language-python"># in the urls.py file:
+urlpatterns = [
+    path('contributors/', views.contributors, kwargs={"name": "Robert May", "age": 38, "experience": 
+    "Two years in startup, graduated from MIT in 2020"}),
+    ]</code></pre><p>Not much can be done with this functionality, but such mechanisms can be used as a base for our coding fantasy. This is what we get as a result:</p><p><img alt="" height="212" src="https://ucarecdn.com/a62c33c1-8cb1-44ca-981a-62f115d313cc/-/crop/1005x212/66,59/-/preview/" width="1005"/></p><p>Since our blog needs a database to store the information our future community members will share, let's create models in <em>models.py</em> file for articles and contributors (or authors, if you like):</p><pre><code class="language-python">from django.db import models
+from django.contrib.auth.models import User
+from datetime import date
+from django.urls import reverse
+
+
+class Article(models.Model):
+    title = models.CharField(max_length=250, help_text='Enter a title for a new article')
+    text = models.CharField(max_length=1000, help_text='Place your story here')
+    author = models.ForeignKey('Contributor', on_delete=models.SET_NULL, null=True)
+    date = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+
+
+class Contributor(models.Model):
+    name = models.CharField(max_length=250, help_text='Enter first name of the contributor')
+    surname = models.CharField(max_length=500, help_text='Enter surname of the contributor')
+    about = models.CharField(max_length=2000, help_text='Tell us about yourself, your experience and current work')
+    email = models.EmailField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['surname', 'name']
+
+    def __str__(self):
+        return f'{self.surname}, {self.name}'</code></pre><p>Don't forget to register your models in the <em>admin.py</em> file:</p><pre><code class="language-python">from django.contrib import admin
+from .models import Article, Contributor
+
+admin.site.register(Article)
+admin.site.register(Contributor)
+</code></pre><p>Also, remember to migrate changes in the project:</p><pre><code class="language-no-highlight">python3 manage.py makemigrations
+python3 manage.py migrate</code></pre><p>Fill your database with articles using the admin interface, create a superuser through the terminal, and add objects:</p><p><img alt="" height="473" src="https://ucarecdn.com/692bc856-367e-4ad6-a792-af1b6c8a6c89/-/crop/1250x473/71,53/-/preview/" width="1250"/></p><p>We will also need a template to represent the results of data processing. Don't forget that we should add the <em>templates/blogsite</em> folder to the tree of the application manually: </p><p><img alt="" height="678" src="https://ucarecdn.com/debe6ff7-aa41-4977-8e68-28853f2f2589/-/crop/495x678/63,0/-/preview/" width="495"/></p><p>We'll start with the <em>index.html</em> page, which will be the list of articles in the blog. For example, the template may look like this:</p><pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Greetings page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Hello, {{ greetings_to }} !&lt;/h1&gt;
+  &lt;h1&gt;Unread articles for today: {{num_articles }}&lt;/h1&gt;
+  {% for article in articles %}
+    &lt;h4&gt;{{ article.title }}&lt;/h4&gt;
+    &lt;h4&gt;{{ article.author }}&lt;/h4&gt;
+    &lt;p&gt;{{ article.date }}&lt;/p&gt;
+    &lt;p&gt;{{ article.text }}&lt;/p&gt;
+    &lt;be&gt;
+  {% endfor %}
+&lt;/body&gt;
+&lt;/html&gt;</code></pre><p>One more preparation step, and we'll be ready to create a view function at last. Let's modify <code class="language-python">urlpatterns</code> in the <em>urls.py</em> file:</p><pre><code class="language-python">urlpatterns = [
+    path('', views.index, name='articles_list'),
+    ]</code></pre><h5 id="create-view-functions">Create view functions</h5><p>We can now create a view function for the index page of our blog:</p><pre><code class="language-python">def index(request):
+    greetings_to = 'Anonymous'
+    num_articles = Article.objects.all().count()
+    articles = Article.objects.all
+    return render(request, 'blogsite/index.html', {'num_articles': num_articles, 'greetings_to': greetings_to, 'articles': articles})</code></pre><p>Here we define the variables that we use in the HTML template, get data from the database (which is called a <code class="language-python">QuerySet</code>, a list of objects of a model) and pass them as a dictionary to the <code class="language-python">render</code> function.</p><p>The result may look like this:</p><p><img alt="" height="534" src="https://ucarecdn.com/35c3aa50-94e7-4dfd-95e4-c2dc8aafca41/-/crop/680x534/73,63/-/preview/" width="680"/></p><p>It's nice to see our work's results already, right? But to make our view function look prettier, let's form a special dictionary named <code class="language-python">context</code> which is more convenient to work with:</p><pre><code class="language-python"># views.py file
+def index(request):
+    num_articles = Article.objects.all().count()
+    articles = Article.objects.all
+    context = {
+        'greetings_to': 'Anonymous',
+        'num_articles': num_articles,
+        'articles': articles,
+    }
+    return render(request, 'blogsite/index.html', context=context)</code></pre><h5 id="class-based-views">Class-based views </h5><p>By now, we have a list of articles on the main page. But to extend the functionality of our application, let's add the possibility to open a page with an article we're interested in by link from the list. We need to extract information from URL patterns and pass it to the view for that purpose. For that purpose, we will use a different way of forming class-based views instead of functions.</p><p>Django framework provides us with generic views from the box, reducing the code we need to write and simplifying its maintenance (extremely helpful in complicated wide applications). </p><p>To change the existing solution, let's start with a URL pattern:</p><pre><code class="language-python">urlpatterns = [
+    ...
+    path('', views.ArticleListView.as_view(), name='index')
+    ]</code></pre><p>The view function's name looks different than the previous one we created. That's because we're going to implement it as a class. It's inherited from a generic view function that already exists. As you can see, we're calling the class method <code class="language-python">as_view()</code> . Let's look at the class itself:</p><pre><code class="language-python">from django.views import generic
+
+class ArticleListView(generic.ListView):
+    model = Article
+    context_object_name = 'articles'
+    queryset = Article.objects.all()
+    template_name = 'index.html'</code></pre><p>The generic views query the database for instances of our model and render the existing template. If we didn't specify the template name, the view class would look for <em>articles_list.html</em> by default regarding the <code class="language-python">context_object_name</code> variable. It's not necessary to define the <code class="language-python">queryset</code> variable, but it's helpful if we need to use filters for data from the database by overriding methods of the class, like utilizing the <a href="https://docs.djangoproject.com/en/4.2/topics/db/managers/#modifying-a-manager-s-initial-queryset" rel="noopener noreferrer nofollow" target="_blank">get_queryset()</a> method:</p><pre><code class="language-python">from django.views import generic
+
+class ArticleListView(generic.ListView):
+    model = Article
+    
+    def get_queryset(self):
+        return Article.objects.filter(title_icontains='django')[:3]</code></pre><p>In such case, our list will contain only the three first articles with the word <code class="language-python">django</code> in the title.</p><p>By the way, our <code class="language-python">ArticleListView</code> doesn't work the same way as the index function we've created. There is no greeting name on the page yet (of course, the name could be changed dynamically, but it's not the point of our topic, so it's simplified to show the principle of variables use), as well as no amount of articles available. And that's a good moment to demonstrate one more way to override context data by adding more information to the generic view. It can be done like this:</p><pre><code class="language-python">class ArticleListView(generic.ListView):
+    model = Article
+    context_object_name = 'articles'
+    queryset = Article.objects.all()
+    template_name = 'index.html'
+
+    def get_context_data(self, **kwargs):
+        num_articles = Article.objects.all().count()
+        context = super(ArticleListView, self).get_context_data(**kwargs)
+        context['greetings_to'] = 'Anonymous'
+        context['num_articles'] = num_articles
+        return context</code></pre><p>In <code class="language-python">get_context_data()</code> function, we call the immediate context of the class first and then create some new data we need to add to the template.</p><p>One more option we can use if needed is pagination. Imagine that our blog is popular, our community expands every minute, and the number of articles in the database increases. To control the number of articles presented on one single page, we need only one extra line in the view:</p><pre><code class="language-python">class ArticleListView(generic.ListView):
+    model = Article
+    paginate_by = 10</code></pre><p>When paths are modified, manually updating every URL within your templates can be difficult. The solution to this is to define functions that return the URL instead. As we plan to have working links in the list, let's change our <code class="language-python">Article</code> model by adding a class method <code class="language-python">get_absolute_url()</code>. </p><pre><code class="language-python">class Article(models.Model):
+    ...
+
+    def get_absolute_url(self):
+        return reverse('article-detail', args=[str(self.id)])</code></pre><p>HTML-template in the <em>index.html</em> also needs to be modified: </p><pre><code class="language-html">{% for article in articles %}
+      &lt;li&gt;
+        &lt;a href="{{ article.get_absolute_url }}"&gt;{{ article.title }}&lt;/a&gt; {{article.author}}
+      &lt;/li&gt;
+{% endfor %}</code></pre><p>The view for article representation may look minimalistic if it's inherited from generic <code class="language-python">DetailView</code>:</p><pre><code class="language-python">class ArticleDetailView(generic.DetailView):
+    model = Article
+    template_name = 'article.html'</code></pre><p>Oh, and don't forget to add HTML-template <em>article.html </em>to the <em>templates/blogsite</em> folder! </p><pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Time to learn something new!&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h3&gt;{{article.title}}&lt;/h3&gt;
+
+  &lt;h4&gt;{{article.author}}&lt;/h4&gt;
+  &lt;br&gt;
+  &lt;h4&gt;{{article.text}}&lt;/h4&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre><p>The only thing missing is the path for this page:</p><pre><code class="language-python">urlpatterns = [
+    ....
+    path('article/&lt;int:pk&gt;', views.ArticleDetailView.as_view(), name='article-detail'),
+    ]</code></pre><p>The primary key of a model instance accesses the article we want to read. And we didn't need any additional code lines to make it work. It's all done by <code class="language-python">DetailView</code> and <code class="language-python">get_absolute_url()</code> method.</p><h5 id="conclusion">Conclusion</h5><p>Well, the skeleton of the blog for the Django community is created and working. Great job! Of course, it can be expanded by authorization functionality, login and logout views, forms for adding new articles, CSS styles, and others. So much to do! </p><p>Let's summarize what we've learned:</p><ul><li><p>what is a view and how to process simple requests;</p></li><li><p>how to create a view function and its parameters and methods;</p></li><li><p>got in touch with the class-based views: generic <code class="language-python">ListView</code> and <code class="language-python">DetailView</code>, methods overriding, and pagination.</p></li></ul>
+</div>

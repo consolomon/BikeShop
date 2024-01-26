@@ -1,0 +1,60 @@
+<h2>Forms</h2>
+<div class="step-text">
+<p>Django is an effective web framework that provides robust tools for building web applications, including support for creating and processing web forms. <strong>Forms</strong> are an essential part of many web applications, as they allow users to input data and interact with the application meaningfully. Knowing how to make accessible and usable forms helps to keep the service simple.</p><h5 id="modelform">ModelForm</h5><p>This situation is familiar to many: a close friend who lives far away, someone from childhood, or a pen-friend you've never actually met. Holidays come, and you want to surprise them with a postcard. How can you do it? Well, it so happens that we're working hard on the <em>hypergift </em>service. With this service, you can send a postcard to any place worldwide.</p><p>If you only need to represent fields of one single model, which already contains all the information required for building a form: fields, help text, additional information, and so on, you can use a pre-tuned <code class="language-python">ModelForm</code> class. It helps to create forms from an already existing model.</p><p>Let's create a model for <code class="language-python">Postcard</code> in file models.py inside of the app, you are working on the following:</p><pre><code class="language-python">from django.db import models
+
+TITLE_CHOICES = [
+   ('MR', 'Mr.'),
+   ('MRS', 'Mrs.'),
+   ('MS', 'Ms.'),
+]
+
+
+class Postcard(models.Model):
+   address = models.CharField(max_length=255)
+   author = models.CharField(max_length=255)
+   compliment = models.CharField(max_length=1024)
+   usage = models.CharField(max_length=3, choices=TITLE_CHOICES)
+   date_of_delivery = models.DateField(blank=True, null=True)
+   email = models.EmailField()</code></pre><p>Using <code class="language-python">ModelForm</code>, the only thing you need to do is to add <code class="language-python">Meta</code> class inside the <code class="language-python">PostcardForm</code> class, to connect it with Model <code class="language-python">Postcard</code> and to list all the fields of the model we need to use in the form. It is possible to use all fields (<code class="language-python">fields = '__all__'</code>) or to apply the exclusion method (<code class="language-python">exclude</code>) to define fields of the model we don't want to use.</p><pre><code class="language-python">from django.db import models
+from django.forms import ModelForm
+from .models import Postcard
+
+
+class PostCardModelForm(ModelForm):
+   class Meta:
+       model = Postcard
+       fields = '__all__'
+
+class PostCardModelFormOnly2(ModelForm):
+   class Meta:
+       model = Postcard
+       fields = ['address', 'date_of_delivery']</code></pre><p>It's possible to exclude fields from the model, for example like this:</p><pre><code class="language-python">class PostCardModelFormPartial(ModelForm):
+    class Meta:
+        model = Postcard
+        exclude = ['date_of_delivery']</code></pre><p>As you can see, ModelForm in simple cases, is simple and easy to understand!</p><p>You can redefine help_text notes, errors, and so on using the Meta class.</p><p>So now you can use <code class="language-python">PostCardModelForm</code> the same way as <code class="language-python">PostcardForm</code>. In views.py:</p><pre><code class="language-python">from .forms import PostCardModelForm
+from django.views.generic.edit import FormView
+
+
+class PostcardFormView(FormView):
+   form_class = PostCardModelForm
+   template_name = "postcard/form.html"
+   success_url = "/postcard/form"</code></pre><p>Finally, make a URL-mapper in urls.py:</p><pre><code class="language-python">from django.urls import path
+from .views import PostcardFormView
+
+
+urlpatterns = [
+   path('form/', PostcardFormView.as_view())
+]</code></pre><h5 id="custom-forms">Custom forms</h5><p>Using a <code class="language-python">ModelForm</code> class, as was shown above, is a good way if you only need to represent fields of one single model. But what if you need a more flexible way to create forms of any structure you need?</p><p>It can be connected with any model (or models) from the database. It is necessary if you deal with complicated or multiple relations between data objects.</p><p>To make a custom form, you inherit the class from <code class="language-python">django.forms.Form</code>. The class provides means to render the form in templates, validate it and show exact errors in the input. Fields should be declared with specific types for correct validation of the user's input (don't worry, we'll discuss it further on).</p><p>Let's create a new form:</p><pre><code class="language-python">from django import forms
+
+
+class PostcardForm(forms.Form):
+    address = forms.CharField(label='Destination Address')
+    author = forms.CharField(min_length=3)
+    compliment = forms.CharField(max_length=1024)
+    date_of_delivery = forms.DateField(input_formats=['%Y/%m/%d'])
+    email = forms.EmailField()</code></pre><h5 id="forms-in-templates">Forms in templates</h5><p>A form is an element of an HTML page, and Django provides tools to render its fields correctly. It also gives default methods to format fields as tables, unordered lists, or paragraphs.</p><p>Assume that we initialize a form with no arguments and save it in the <code class="language-python">postcard_form</code> variable. We pass the context dictionary <code class="language-python">{'postcard_form': postcard_form}</code> to a template and add <a href="https://docs.djangoproject.com/en/2.2/ref/csrf/#how-to-use-it" rel="noopener noreferrer nofollow" target="_blank">csrf_token</a> to prevent security issues:</p><pre><code class="language-html">&lt;form method="post"&gt;
+  {% csrf_token %}
+  &lt;table&gt;{{ postcard_form.as_table }}&lt;/table&gt;
+  &lt;button type="submit"&gt;Submit&lt;/button&gt;
+&lt;/form&gt;</code></pre><p>The method <code class="language-python">postcard_form.as_table</code> converts the instance of the <code class="language-python">PostcardForm</code> class to <code class="language-python">&lt;tr&gt;</code>, <code class="language-python">&lt;th&gt;</code> and <code class="language-python">&lt;td&gt;</code> HTML tags with appropriate labels and attributes. The <em>address</em> field has a custom title in the class, so it also has the same label value on a page.</p><pre><code class="language-html">&lt;th&gt;&lt;label for="id_address"&gt;Destination Address:&lt;/label&gt;&lt;/th&gt;</code></pre><p>In the browser, the form would look like this:</p><p style="text-align: center;"><picture><source media="(max-width: 480px)" srcset="https://ucarecdn.com/4294bc96-9db7-49c5-942d-a2d954ec74b5/-/stretch/off/-/resize/480x/-/format/webp/ 1x,https://ucarecdn.com/4294bc96-9db7-49c5-942d-a2d954ec74b5/-/stretch/off/-/resize/960x/-/format/webp/ 2x,https://ucarecdn.com/4294bc96-9db7-49c5-942d-a2d954ec74b5/-/stretch/off/-/resize/1440x/-/format/webp/ 3x" type="image/webp"/><source media="(max-width: 800px)" srcset="https://ucarecdn.com/4294bc96-9db7-49c5-942d-a2d954ec74b5/-/stretch/off/-/resize/800x/-/format/webp/ 1x,https://ucarecdn.com/4294bc96-9db7-49c5-942d-a2d954ec74b5/-/stretch/off/-/resize/1600x/-/format/webp/ 2x,https://ucarecdn.com/4294bc96-9db7-49c5-942d-a2d954ec74b5/-/stretch/off/-/resize/2400x/-/format/webp/ 3x" type="image/webp"/><source srcset="https://ucarecdn.com/4294bc96-9db7-49c5-942d-a2d954ec74b5/-/stretch/off/-/resize/1100x/-/format/webp/ 1x,https://ucarecdn.com/4294bc96-9db7-49c5-942d-a2d954ec74b5/-/stretch/off/-/resize/2200x/-/format/webp/ 2x,https://ucarecdn.com/4294bc96-9db7-49c5-942d-a2d954ec74b5/-/stretch/off/-/resize/3000x/-/format/webp/ 3x" type="image/webp"/><img alt=" Example of a form" height="279" src="https://ucarecdn.com/4294bc96-9db7-49c5-942d-a2d954ec74b5/" width="478"/></picture></p><p> </p><p>Other methods for rendering forms are <code class="language-python">form.as_p</code> (converts forms to paragraphs) and <code class="language-python">form.as_ul</code><strong> (</strong>converts them to an unordered list).</p><h5 id="conclusion">Conclusion</h5><p>Forms are an essential part of any web application, and Django provides developers with the tools they need to create effective and efficient forms. Furthermore, forms can be easily integrated into templates, allowing seamless user experiences. By leveraging Django's forms API and ModelForm features, developers can save time and effort in creating forms.</p>
+</div>

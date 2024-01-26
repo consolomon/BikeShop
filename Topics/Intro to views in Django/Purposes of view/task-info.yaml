@@ -1,0 +1,19 @@
+type: choice
+is_multiple_choice: true
+options:
+  - text: Sends HTTP responses back to the client
+  - text: Customizes HTML templates
+  - text: Connects HTML templates with the logic of the application
+  - text: Determines fields of models
+  - text: Takes web requests
+files:
+  - name: main.py
+    visible: true
+    text: |+
+      #  You can experiment here, it won’t be checked
+    
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/29411#comment
+status: Solved
+record: -1
+local_check: false

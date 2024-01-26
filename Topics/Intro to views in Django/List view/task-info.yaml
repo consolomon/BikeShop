@@ -1,0 +1,21 @@
+type: code
+files:
+  - name: main.py
+    visible: true
+    highlight_level: NONE
+    text: |-
+      from django.views.generic import ...
+      
+      class BookListView(...):
+          model = ...
+          context_object_name = ...
+          queryset = ...
+          template_name = ...
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/29413#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: "Tue, 23 Jan 2024 22:40:27 UTC"
+record: -1
+submission_language: python3

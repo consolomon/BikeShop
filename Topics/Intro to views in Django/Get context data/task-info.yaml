@@ -1,0 +1,19 @@
+type: choice
+is_multiple_choice: false
+options:
+  - text: "<code>def get_context_data(self, request):</code>"
+  - text: "<code>def get_context_data(self, context):</code>"
+  - text: <code>def get_context_data(request):</code>
+  - text: <code>def get_context_data(self):</code>
+  - text: "<code>def get_context_data(self, **kwargs):</code>"
+files:
+  - name: main.py
+    visible: true
+    text: |+
+      #  You can experiment here, it won’t be checked
+    
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/29414#comment
+status: Solved
+record: -1
+local_check: false

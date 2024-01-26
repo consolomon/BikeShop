@@ -1,0 +1,9 @@
+<h2>CBV to FBV</h2>
+<div class="step-text">
+<p></p>
+<p>We have the class-based view <code class="language-python">HelloWorldView</code>. Transform it to <code class="language-python">helloworld_view</code>, a function-based view that responds only to <code class="language-python">GET</code> requests</p>
+<pre><code class="language-python">class HelloWorldView(View):
+    def get(self, request):
+        html = "Hello, World!"
+        return HttpResponse(html)</code></pre><br><br><font color="gray">Memory limit: 256 MB</font><br><font color="gray">Time limit: 15 seconds</font><br><br>
+</div>

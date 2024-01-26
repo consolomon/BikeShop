@@ -1,0 +1,18 @@
+type: choice
+is_multiple_choice: false
+options:
+  - text: Additional fields may only return strings
+  - text: "is_up should be an attribute, not a method"
+  - text: is_up is a reserved method in the ModelAdmin class
+  - text: is_up is not present in readonly_fields
+files:
+  - name: main.py
+    visible: true
+    text: |+
+      #  You can experiment here, it won’t be checked
+    
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/7873#comment
+status: Solved
+record: -1
+local_check: false

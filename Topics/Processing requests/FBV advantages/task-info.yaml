@@ -1,0 +1,19 @@
+type: choice
+is_multiple_choice: true
+options:
+  - text: They do not require good understanding of inheritance and other concepts of
+      OOP
+  - text: They help avoid reusing of code
+  - text: They are easier to extend
+  - text: They are simpler to read
+files:
+  - name: main.py
+    visible: true
+    text: |+
+      #  You can experiment here, it won’t be checked
+    
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/27987#comment
+status: Solved
+record: -1
+local_check: false

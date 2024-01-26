@@ -1,0 +1,100 @@
+<h2>Admin interface</h2>
+<div class="step-text">
+<p>Developers usually do not have interactive access to the database on the production server, even with the Python console. How can you manipulate the data in the database? Can your colleagues do anything with business objects if they don't know Python and Django?</p>
+<p>You're probably dreading having to write yet another web interface for that. Well, it's not all that bad: you'll need to write some code, but not as much as you think. Django provides a helpful admin interface to work with objects in it.</p>
+<h5 id="registering-models">Registering models</h5>
+<p>You don't have any models in the admin interface as a start. To add one, register them in the <em>admin.py</em> module. This module exists in each application by default.</p>
+<p>Let's look at a hypothetical project. We are creating an online auction but do not have much time to prepare the first release. To avoid using external dependencies, we change the site's content in the Django admin interface. The models look like this:</p>
+<pre><code class="language-python">from django.contrib.auth.models import User
+from django.db import models
+
+
+class Lot(models.Model):
+    description = models.CharField(max_length=256)
+    initial_price = models.FloatField()
+
+
+class Bid(models.Model):
+    lot = models.ForeignKey(Lot, on_delete=models.CASCADE)
+    price = models.FloatField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)</code></pre>
+<p>To see models in the admin interface, register them with the <code class="language-python">register</code> function. Let's see what we should add to the <em>admin.py</em> module.</p>
+<pre><code class="language-python">from django.contrib import admin
+from .models import Bid, Lot
+
+
+admin.site.register(Bid)
+admin.site.register(Lot)</code></pre>
+<p>We've registered our models. Now let's see what you can get from it.</p>
+<h5 id="admin-interface">Admin interface</h5>
+<p>Admins are not ordinary users; they are <strong>superusers</strong> in Django terminology. To use the interface, create a superuser account if you don't have one already. Also, do not remove <code class="language-python">path('admin/', admin.site.urls)</code> from the default configuration of the main <em>urls.py</em> module of your project.</p>
+<p>If you're done with all preparations, run <code class="language-python">python manage.py runserver</code> from the console and go to the <em>http://localhost:8000/admin</em> URL in your browser. You should log in with a superuser account.</p>
+<p style="text-align: center;"><img alt="Main admin page" height="372" name="Снимок экрана от 2023-05-04 21-12-35.png" src="https://ucarecdn.com/b05dc6f4-fb8c-4b42-b154-98795d88289f/" width="832"/></p>
+<p>Now you can add, change or delete Users, Groups, Bids, and Lots. Try to check out every link and change the objects you want; it will help you familiarize yourself with the interface.</p>
+<p>All objects in the database have a page, and you can see and change the object's content.</p>
+<p style="text-align: center;"><img alt="Objects page" height="387" name="Снимок экрана от 2023-05-04 21-16-16.png" src="https://ucarecdn.com/75c0b7e3-8b0a-4c47-b3b5-86910b3c5afa/" width="1294"/></p>
+<p>You already know how to fill the content of the service through the web interface. Let's now learn how to upgrade it and add restrictions and modifications.</p>
+<p></p><div class="alert alert-primary">Not only superusers have access to the admin panel. The <code class="language-python">is_staff</code> attribute is responsible for access to the administrative part of the site, so any user whose <code class="language-python">is_staff</code> value is <code class="language-python">True</code> can access the admin area</div>
+<h5 id="customize-fields">Customize fields</h5>
+<p>Not all data should be open for changes. For example, our clients won't be happy if we adjust their bids. No matter how honest developers and business users are, it's better not to let them change any data in the <code class="language-python">Bid</code> objects. To customize fields, use the <code class="language-python">ModelAdmin</code> class.</p>
+<p>The instance of the <code class="language-python">ModelAdmin</code> class has a lot of customizable attributes. The <code class="language-python">fields</code> attribute is the list of model fields you want to display on a page. The <code class="language-python">readonly_fields</code> is the list of fields that all admins can see but not modify. Both attributes can be <code class="language-python">tuple</code> or <code class="language-python">list</code> instances.</p>
+<pre><code class="language-python">class BidAdmin(admin.ModelAdmin):
+    fields = ('lot', 'price', 'user')
+    readonly_fields = ('lot', 'price', 'user')
+
+admin.site.register(Bid, BidAdmin)</code></pre>
+<p>Now you can check that you see all the data but cannot modify any bids. You can choose what to include on a page by removing some elements from the list.</p>
+<p style="text-align: center;"><img alt="Bid page with readonly fields" height="433" name="Снимок экрана от 2023-05-04 21-27-31.png" src="https://ucarecdn.com/635dd25c-cc5e-4625-b120-5d75238d5a00/" width="1305"/></p>
+<p></p><div class="alert alert-primary">The <code class="language-python">readonly_fields</code> attribute should be a subset of the <code class="language-python">fields</code> attribute; otherwise, not all elements from read-only fields will be on a page.</div>
+<p></p><div class="alert alert-warning">You cannot register the same model twice with different <code class="language-python">ModelAdmin</code> classes.</div>
+<h5 id="additional-fields">Additional fields</h5>
+<p>It's great to get the plain data from the tables with several lines of code, but how do we add more information from the database?</p>
+<p>We want to see which lots are trending. In our case, it's the lots with ten bids or more. There is no such field in a model, but we can prepare the <code class="language-python">ModelAdmin</code> field with this value. Choose any name you want unless it intersects with the existing attribute of the class. For more info, take a look at the attributes in the <a href="https://docs.djangoproject.com/en/4.2/ref/contrib/admin/" rel="noopener noreferrer nofollow" target="_blank">documentation</a>. We've added the <code class="language-python">trending</code> method with the string <code class="language-python">trending</code> to the <code class="language-python">fields</code> list:</p>
+<pre><code class="language-python">class LotAdmin(admin.ModelAdmin):
+    fields = ('description', 'initial_price', 'trending')
+    readonly_fields = ('trending',)
+
+    def trending(self, obj):
+        return '🔥' if obj.bid_set.count() &gt;= 10 else '❄'</code></pre>
+<p>After you've added the custom field, you can see if a lot is trending. Besides strings, a method may return any other Python objects converting them to strings implicitly.</p>
+<p></p><div class="alert alert-primary">Do not forget to add a custom field to the <code class="language-python">readonly_fields</code> list; otherwise, it will produce an error. Custom fields are not modifiable.</div>
+<h5 id="inline-admin-field">Inline admin field</h5>
+<p>We can add any fields we like if they are custom values or parts of a model. We can also use the inline fields to display all the bids for a lot on the page.</p>
+<p>This time, create an additional class for displaying each inline object. You want to add bids to a page with the lot, so create the <code class="language-python">TabularInline</code> class for the <code class="language-python">Bid</code> model:</p>
+<pre><code class="language-python">from django.contrib import admin
+from .models import Bid, Lot
+
+
+class BidInline(admin.TabularInline):
+    can_delete = False
+    model = Bid
+    readonly_fields = ('price', 'user')
+
+
+class LotAdmin(admin.ModelAdmin):
+    inlines = (BidInline,)
+
+
+admin.site.register(Lot, LotAdmin)</code></pre>
+<p>We don't register the <code class="language-python">BidInline</code> class because we cannot use it independently, but we define the <code class="language-python">model</code> attribute for it. Restrict the actions for this class with read-only fields and set <code class="language-python">can_delete</code> attribute to <code class="language-python">False</code> to prevent deleting bids by the admin user.</p>
+<p>In the <code class="language-python">LotAdmin</code> class, define the <code class="language-python">inlines</code> attribute and add the <code class="language-python">BidInline</code> to it.</p>
+<p>That's it; all bids with the lot item are displayed on the same page.</p>
+<p style="text-align: center;"><img alt="Page with inline fields" height="628" name="Снимок экрана от 2023-05-04 21-41-37.png" src="https://ucarecdn.com/339dd6c5-5f9c-4a66-97c0-8cd3d3ead6ec/" width="1311"/></p>
+<p></p><div class="alert alert-primary">You can create multiple inline classes for the same model.</div>
+<p>There are many options available for you to modify default classes, and you can <a href="https://docs.djangoproject.com/en/4.1/ref/contrib/admin/#modeladmin-options" rel="noopener noreferrer nofollow" target="_blank">read more</a> about it in the official documentation.</p>
+<h5 id="sorting-and-ordering">Sorting and ordering</h5>
+<p>Our app became popular, and we now have hundreds of lots and bids. When administrators open their list, it's easy for them to get confused, and finding the right lot or bid is tough. To fix the situation, you can use the sorting of available items. </p>
+<p>The Django admin interface provides a way to sort and order objects using the <code class="language-python">list_display</code> and <code class="language-python">ordering</code> attributes in the <code class="language-python">ModelAdmin</code> class. <code class="language-python">list_display</code> specifies which fields are displayed in the list of objects, and the order in which they are displayed can be used to sort the list. <code class="language-python">ordering</code> specifies the default order in which objects are displayed and can be used to sort the list by one or more fields. Together, these attributes provide a flexible way to customize the display and ordering of objects in the admin interface.</p>
+<pre><code class="language-python">from django.contrib import admin
+from .models import Bid
+
+class BidAdmin(admin.ModelAdmin):
+    list_display = ('lot', 'price', 'user')
+    ordering = ('-price',)
+
+admin.site.register(Bid, BidAdmin)</code></pre>
+<p>As you can see, we can add the <code class="language-python">-</code> symbol before the field name to sort the objects by their price in reverse order. </p>
+<p style="text-align: center;"><img alt="Page with ordering" height="628" name="Снимок экрана от 2023-05-04 21-43-58.png" src="https://ucarecdn.com/e4f5a986-4b84-43df-87da-c6f2cb58ee79/" width="1311"/></p>
+<h5 id="conclusion">Conclusion</h5>
+<p>The Django admin interface is a powerful and flexible tool that simplifies managing website data. By customizing fields, adding extra fields, and using inline admin fields, developers can create an intuitive and efficient administrative environment tailored to the specific needs of their applications. By leveraging these features, one can enhance productivity and streamline the overall management of a Django project.</p>
+</div>

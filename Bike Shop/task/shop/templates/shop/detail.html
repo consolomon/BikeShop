@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+    <head>
+        <meta charset="UTF-8">
+        <title>{{ bike }}</title>
+    </head>
+    <body>
+        <h2>{{ bike.name }}</h2>
+        <p>frame: {{ bike.frame }}</p>
+        <p>seat: {{ bike.seat }}</p>
+        <p>tires: {{ bike.tire }}</p>
+        <p>basket: {{ bike.get_basket }}</p>
+        <p>description: {{ bike.description }}</p>
+
+        <div>
+            {% if not bike.is_available %}
+                <p><strong>Unfortunately, this bike is currently not available.</strong></p>
+            {% elif bike.has_basket and basket.quantity < 1 %}
+                <p><strong>Unfortunately, this bike is currently not available.</strong></p>
+            {% else %}
+                <p><strong>If you want to order the bike, fill in the form below:</strong></p>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <p><label for="name">your name:</label><input id="name" type="text" name="name"></p>
+                    <p><label for="surname">your surname:</label><input id="surname" type="text" name="surname"></p>
+                    <p><label for="phone_number">your phone number:</label><input id="phone_number" type="text" name="phone_number"></p>
+                    <input type="submit" value="Order">
+                </form>
+            {% endif %}
+        </div>
+    </body>
+</html>

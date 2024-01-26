@@ -1,0 +1,22 @@
+type: code
+files:
+  - name: main.py
+    visible: true
+    highlight_level: NONE
+    text: |-
+      INSTALLED_APPS = [
+          'django.contrib.admin',
+          'django.contrib.auth',
+          'django.contrib.contenttypes',
+          'django.contrib.sessions',
+          'django.contrib.messages',
+          'django.contrib.staticfiles',
+      ]
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/25357#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: "Fri, 19 Jan 2024 02:35:35 UTC"
+record: -1
+submission_language: python3

@@ -1,0 +1,11 @@
+<h2>Create Object in the Database</h2>
+<div class="step-text">
+<p>You have a model <code class="language-python">Task</code> with fields <em>description, is_done, priority:</em></p>
+<pre><code class="language-python">class Task(models.Model):
+    description = models.CharField(max_length=256)
+    is_done = models.BooleanField()
+    priority = models.IntegerField()
+</code></pre>
+<p>Create a new <code class="language-python">Task</code> with description "walk to the grocery"(without quotes) and priority 5. The task is not done yet.</p>
+<p>Save it to the database.</p><br><br><font color="gray">Memory limit: 256 MB</font><br><font color="gray">Time limit: 15 seconds</font><br><br>
+</div>

@@ -1,0 +1,27 @@
+type: code
+files:
+  - name: main.py
+    visible: true
+    highlight_level: NONE
+    text: |-
+      template = """
+      <html>
+          <ul>
+          {%  %}
+              <div>
+              {% %}
+                  {{ }}
+              {% %}
+              </div>
+          {% %}
+          </ul>
+      </html>
+      """
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/33369#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: "Fri, 26 Jan 2024 03:00:34 UTC"
+record: -1
+submission_language: python3

@@ -1,0 +1,19 @@
+type: code
+files:
+  - name: main.py
+    visible: true
+    highlight_level: NONE
+    text: |-
+      from django import forms
+      
+      
+      class ProductForm(forms.Form):
+          ...
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/28266#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: "Tue, 23 Jan 2024 23:40:57 UTC"
+record: -1
+submission_language: python3

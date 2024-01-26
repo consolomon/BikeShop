@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Home page</title>
+    </head>
+    <body>
+        <h1>Welcome to the Bike shop</h1>
+        <p>Choose one of our bikes:</p>
+        {% for bike in bikes %}
+        <ul>
+            <li><a href="{% url 'detail' bike.pk %}">{{ bike }}</a></li>
+        </ul>
+        {% endfor %}
+    </body>
+</html>
